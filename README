@@ -1,0 +1,34 @@
+Musat-Burcea Adrian 332CB - APD Tema 1
+
+Implementarea threadurilor:
+    Pornesc toate threadurile deodata si in functie de id-ul fiecaruia si de
+    numarul de mapperi si de reduceri, ii asignez functia si structura de
+    argumente corespunzatoare. Ca elemente de sincronizare folosesc un mutex
+    pentru a preveni race conditions la accesarea cozii de fisiere si la
+    inserarea in vectorul de mapuri si o bariera pentru asigura ececutia
+    threadurilor de mapperi inaintea celor de reduceri.
+
+Precalculare puteri:
+    Creez un map de puteri unde cheia este exponentul, iar valoarea este setul
+    ce contine toate puterile numerelor la acel exponent care incap intr-un int.
+    Cand verifica daca un numar este putere perfecta, apelez la acest map.
+    Fiind un map neordonat ce contine seturi neordonate, cautarea se face 
+    in O(1) amortizat, deci foarte eficient. 
+
+Implementarea functiilor de mapper si reducer:
+    Threadurile de mapper deschid fisierele din coada de fisiere, de fiecare
+    data cand sunt disponibile. Folosesc o coada de fisiere pentru a gestiona
+    dinamic fisierele alocate fiecarui mapper. Fiecare mapper creeaza un map nou
+    in care vor fi puse numerele gasite ca fiind puteri perfecte. Cand un fisier 
+    este deschis, mapperul citeste toate numerele din el si verifica daca acestea sunt puteri
+    perfecte folosind tabela de puteri precalculata. Daca un numar este gasit ca fiind
+    putere perfecte al exponentului e, atunci il adaugam in setul corespunzator din
+    map cu cheie acel exponent. Folosesc seturi, deoarece ne intereseaza doar aparittile
+    unice ale fiecarui numar. Cand un thread de mapper nu mai are fisiere de deschis, acesta 
+    adauga in final mapul cu rezultatele proprii in vectorul de mapuri. Cand toate threadurile
+    de mapperi au terminat, incep threadurile de reducer. Acestea parcurg vectorul de mapuri
+    si se uita doar la cheia corespunzatoare exponentului. Se extrage setul si toate numerele 
+    din acel set sunt inserate in setul final, care va fi rezultatul fiecarui reducer. 
+    Cand un thread de reducer termina de procesat toate mapurile, acesta scrie rezultatul
+    in fisierul de iesire, care este numarul de elemente din setul final.
+ 
